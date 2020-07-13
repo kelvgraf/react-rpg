@@ -20,13 +20,13 @@ const Map = styled.div`
 
 const Person = styled.div`
   position: absolute;
-  top: ${props => props.position[1]}px;
-  left: ${props => props.position[0]}px;
+  top: calc(${props => props.position[1]} * 35px);
+  left: calc(${props => props.position[0]} * 35px);
   width: 35px;
   height: 35px;
 
   background: url(${sprite});
-  background-position: 0 0;
+  background-position: ${props => props.positionPerson};
 `;
 
 class App extends Component {
@@ -35,63 +35,70 @@ class App extends Component {
 
     this.state = {
       position: [0, 0],
-      moving: 0
+      positionPerson: '0 0'
     };
   }
+  componentDidMount() {
+    window.addEventListener("keyup", this.move)
+  }
 
-  tete = () => {
-  window.addEventListener("keydown", function (event) {
-    if (event.defaultPrevented) {
-    }
-    const { position, moving } = this.state;
-  
-    switch (event.key) {
-      case "ArrowDown": 
-      this.setState({moving: 35, position: [position[0]+35,position[1]]});
-        break;
-      case "ArrowUp":
-        alert("Key pressed is: " + event.key);
-        break;
-      case "ArrowRight":
-        alert("Key pressed is: " + event.key);
-        break;
-      case "ArrowLeft":
-        alert("Key pressed is: " + event.key);
-        break;
+  move = event => {
+    const { position } = this.state;
+    let newPosition = position;
+    switch (event.keyCode) {
+      case 40:
+      case 83:
+        if (position[1] + 1 >= 0 && position[1] + 1 < 20) {
+          newPosition = [position[0], position[1] + 1];
+          this.setState({
+            positionPerson: '0 0',
+          })
+        }
+        break
+      case 38:
+      case 87:
+        if (position[1] - 1 >= 0 && position[1] - 1 < 20) {
+          newPosition = [position[0], position[1] - 1];
+          this.setState({
+            positionPerson: '0 70px',
+          })
+        }
+        break
+      case 39:
+      case 68:
+        if (position[0] + 1 >= 0 && position[0] + 1 < 20) {
+          newPosition = [position[0] + 1, position[1]];
+          this.setState({
+            positionPerson: '0 107px',
+          })
+        }
+        break
+      case 37:
+      case 65:
+        if (position[0] - 1 >= 0 && position[0] - 1 < 20) {
+          newPosition = [position[0] - 1, position[1]]
+          this.setState({
+            positionPerson: '0 37px',
+          })
+        }
+        break
       default:
         return;
     }
-  
 
-    event.preventDefault();
-  }, true);
-}
-
-MyFunction = (ev) => {
-  const { position, moving } = this.state;
-  if(ev.key  === 'ArrowRight' || ev.key  === 'd') {
-    position[0] < 665 && this.setState({moving: 35, position: [position[0]+35,position[1]]});
-  } 
-
-  if(ev.key  === 'ArrowLeft' || ev.key  === 'a') {
-    position[0] > 0 && this.setState({moving: 100, position: [position[0]-35,position[1]]});
+    this.setState({
+      position: newPosition,
+    })
   }
-  if(ev.key  === 'ArrowUp' || ev.key  === 'w') {
-    position[1] > 0 && this.setState({moving: 65, position: [position[0],position[1]-35]})
-  }
-  if(ev.key  === 'ArrowDown' || ev.key  === 's') {
-    position[1] < 665 && this.setState({moving: 0, position: [position[0],position[1]+35]})
-  }
-}
 
   render() {
-    const { position, moving } = this.state;
+    const { position, positionPerson } = this.state;
 
     return (
-      <Container onKeyUp={this.tete()}>
-      <Map>
-        <Person position={position} moving={moving} />
-      </Map>
+      <Container>
+        <Map>
+          <Person position={position} positionPerson={positionPerson} />
+        </Map>
       </Container>
     );
   }
