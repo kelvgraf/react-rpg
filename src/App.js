@@ -34,17 +34,63 @@ class App extends Component {
     super(props);
 
     this.state = {
-      position: [0, 0]
+      position: [0, 0],
+      moving: 0
     };
   }
 
+  tete = () => {
+  window.addEventListener("keydown", function (event) {
+    if (event.defaultPrevented) {
+    }
+    const { position, moving } = this.state;
+  
+    switch (event.key) {
+      case "ArrowDown": 
+      this.setState({moving: 35, position: [position[0]+35,position[1]]});
+        break;
+      case "ArrowUp":
+        alert("Key pressed is: " + event.key);
+        break;
+      case "ArrowRight":
+        alert("Key pressed is: " + event.key);
+        break;
+      case "ArrowLeft":
+        alert("Key pressed is: " + event.key);
+        break;
+      default:
+        return;
+    }
+  
+
+    event.preventDefault();
+  }, true);
+}
+
+MyFunction = (ev) => {
+  const { position, moving } = this.state;
+  if(ev.key  === 'ArrowRight' || ev.key  === 'd') {
+    position[0] < 665 && this.setState({moving: 35, position: [position[0]+35,position[1]]});
+  } 
+
+  if(ev.key  === 'ArrowLeft' || ev.key  === 'a') {
+    position[0] > 0 && this.setState({moving: 100, position: [position[0]-35,position[1]]});
+  }
+  if(ev.key  === 'ArrowUp' || ev.key  === 'w') {
+    position[1] > 0 && this.setState({moving: 65, position: [position[0],position[1]-35]})
+  }
+  if(ev.key  === 'ArrowDown' || ev.key  === 's') {
+    position[1] < 665 && this.setState({moving: 0, position: [position[0],position[1]+35]})
+  }
+}
+
   render() {
-    const { position } = this.state;
+    const { position, moving } = this.state;
 
     return (
-      <Container>
+      <Container onKeyUp={this.tete()}>
       <Map>
-        <Person position={position} />
+        <Person position={position} moving={moving} />
       </Map>
       </Container>
     );
